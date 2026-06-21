@@ -4,25 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Elektron Tasbeh</title>
-  <link rel="stylesheet" href="style.css?v=4">
-  <link rel="manifest" href="manifest.json?v=4">
-  <meta name="theme-color" content="#0B0F14">
-  <meta name="description" content="Zikr bilan qalbni tinchlantir">
+  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="manifest" href="manifest.json?v=5">
+  <meta name="theme-color" content="#000000">
 </head>
 <body>
-  <!-- Background particles -->
-  <div class="bg-particles" id="particles"></div>
-  
   <div class="bg">
     <div class="blob blob1"></div>
     <div class="blob blob2"></div>
-    <div class="blob blob3"></div>
   </div>
 
-  <main class="card" role="main">
-    <!-- Header -->
+  <main class="card">
     <header>
-      <h1 class="title">📿 Elektron Tasbeh</h1>
+      <h1 class="title">◈ ELEKTRON TASBEH</h1>
       <p class="sub">Zikr bilan qalbni tinchlantir</p>
     </header>
 
@@ -36,118 +30,112 @@
       <div class="zikr-chip" data-zikr="5">+ Qo'shish</div>
     </div>
 
-    <!-- Main Counter -->
+    <!-- Counter -->
     <div class="counter-container">
       <div class="progress-ring">
-        <svg width="200" height="200" viewBox="0 0 200 200">
-          <circle class="ring-bg" cx="100" cy="100" r="85" />
-          <circle class="ring-progress" id="ringProgress" cx="100" cy="100" r="85" />
+        <svg width="160" height="160" viewBox="0 0 160 160">
+          <circle class="ring-bg" cx="80" cy="80" r="68" />
+          <circle class="ring-progress" id="ringProgress" cx="80" cy="80" r="68" />
         </svg>
         <div class="counter-display">
           <div class="count" id="countDisplay">0</div>
-          <div class="count-label">Zikr</div>
+          <div class="count-label">ZIKR</div>
         </div>
       </div>
     </div>
 
-    <!-- Goal Display -->
+    <!-- Goal -->
     <div class="goal-display">
-      <span>🎯 Maqsad: </span>
+      <span>◆ MAQSAD</span>
       <span id="targetDisplay">100</span>
-      <span class="goal-progress" id="goalProgress">0%</span>
+      <span id="goalProgress">0%</span>
     </div>
 
     <!-- Stats -->
     <div class="stats">
       <div class="stat-item">
-        <span class="stat-icon">🔥</span>
+        <span class="stat-icon">◆</span>
         <span class="stat-label">Streak</span>
         <span class="stat-value" id="streakCount">1</span>
       </div>
       <div class="stat-item">
-        <span class="stat-icon">📊</span>
+        <span class="stat-icon">◆</span>
         <span class="stat-label">Bugun</span>
         <span class="stat-value" id="todayCount">0</span>
       </div>
       <div class="stat-item">
-        <span class="stat-icon">📈</span>
+        <span class="stat-icon">◆</span>
         <span class="stat-label">Jami</span>
         <span class="stat-value" id="totalCount">0</span>
       </div>
       <div class="stat-item">
-        <span class="stat-icon">⏱</span>
+        <span class="stat-icon">◆</span>
         <span class="stat-label">Sessiya</span>
         <span class="stat-value" id="sessionCount">0</span>
       </div>
     </div>
 
-    <!-- Progress Bar -->
+    <!-- Progress -->
     <div class="progress">
       <div class="bar" id="progressBar"></div>
     </div>
 
-    <!-- Main Controls -->
+    <!-- Controls -->
     <div class="btn-group">
-      <button class="main-btn" id="mainBtn" aria-label="Zikr qilish">
-        <span class="btn-icon">➕</span> Zikr qilish
-      </button>
-      
+      <button class="main-btn" id="mainBtn">◈ Zikr qilish</button>
       <div class="row-btns">
-        <button class="secondary-btn" id="undoBtn">↩️ Orqaga</button>
-        <button class="secondary-btn" id="targetBtn">🎯 Maqsad</button>
-        <button class="secondary-btn danger-btn" id="resetBtn">🔄 Reset</button>
+        <button class="secondary-btn" id="undoBtn">◀ Orqaga</button>
+        <button class="secondary-btn" id="targetBtn">◈ Maqsad</button>
+        <button class="secondary-btn" id="resetBtn">◈ Reset</button>
       </div>
     </div>
 
-    <!-- Extra Features -->
+    <!-- Features -->
     <div class="extra-features">
-      <button class="feature-btn" id="historyBtn">📊 Tarix</button>
-      <button class="feature-btn" id="statsBtn">📈 Statistika</button>
-      <button class="feature-btn" id="settingsBtn">⚙️ Sozlamalar</button>
-      <button class="feature-btn" id="fullscreenBtn">⛶ To'liq</button>
+      <button class="feature-btn" id="historyBtn">◈ Tarix</button>
+      <button class="feature-btn" id="statsBtn">◈ Statistika</button>
+      <button class="feature-btn" id="settingsBtn">◈ Sozlamalar</button>
+      <button class="feature-btn" id="fullscreenBtn">◈ To'liq</button>
     </div>
 
     <footer class="footer">
-      <span>✦</span> Elektron Tasbeh · v4.0 <span>✦</span>
+      <span>◈</span> Elektron Tasbeh · v4.0 <span>◈</span>
     </footer>
   </main>
 
   <!-- Modals -->
   <div class="modal" id="modal">
     <div class="modal-content">
-      <span class="modal-close" id="modalClose">&times;</span>
+      <span class="modal-close" id="modalClose">✕</span>
       <div id="modalBody"></div>
     </div>
   </div>
 
-  <!-- Custom Zikr Modal -->
   <div class="modal" id="zikrModal">
     <div class="modal-content">
-      <span class="modal-close" id="zikrModalClose">&times;</span>
-      <h2>➕ Yangi Zikr Qo'shish</h2>
+      <span class="modal-close" id="zikrModalClose">✕</span>
+      <h2>Yangi Zikr Qo'shish</h2>
       <input type="text" id="newZikrInput" placeholder="Zikr nomi..." class="modal-input">
-      <button id="addZikrBtn" class="main-btn" style="margin-top: 12px;">➕ Qo'shish</button>
+      <button id="addZikrBtn" class="main-btn" style="margin-top:12px;">+ Qo'shish</button>
     </div>
   </div>
 
-  <!-- Edit Counter Modal -->
   <div class="modal" id="editModal">
     <div class="modal-content">
-      <span class="modal-close" id="editModalClose">&times;</span>
-      <h2>✏️ Hisobni Tahrirlash</h2>
+      <span class="modal-close" id="editModalClose">✕</span>
+      <h2>Hisobni Tahrirlash</h2>
       <input type="number" id="editCountInput" class="modal-input" min="0">
-      <button id="saveEditBtn" class="main-btn" style="margin-top: 12px;">💾 Saqlash</button>
+      <button id="saveEditBtn" class="main-btn" style="margin-top:12px;">Saqlash</button>
     </div>
   </div>
 
-  <!-- Settings Modal -->
   <div class="modal" id="settingsModal">
     <div class="modal-content">
-      <span class="modal-close" id="settingsModalClose">&times;</span>
-      <h2>⚙️ Sozlamalar</h2>
+      <span class="modal-close" id="settingsModalClose">✕</span>
+      <h2>Sozlamalar</h2>
       
       <div class="setting-item">
-        <span>🌙 Kunduzgi rejim</span>
+        <span>◈ Kunduzgi rejim</span>
         <label class="switch">
           <input type="checkbox" id="themeToggle">
           <span class="slider"></span>
@@ -155,7 +143,7 @@
       </div>
       
       <div class="setting-item">
-        <span>🔊 Ovoz</span>
+        <span>◈ Ovoz</span>
         <label class="switch">
           <input type="checkbox" id="soundToggle" checked>
           <span class="slider"></span>
@@ -163,7 +151,7 @@
       </div>
       
       <div class="setting-item">
-        <span>📳 Vibratsiya</span>
+        <span>◈ Vibratsiya</span>
         <label class="switch">
           <input type="checkbox" id="vibrateToggle" checked>
           <span class="slider"></span>
@@ -171,40 +159,27 @@
       </div>
       
       <div class="setting-item">
-        <span>⚡ Vibratsiya kuchi</span>
+        <span>◈ Vibratsiya kuchi</span>
         <input type="range" id="hapticIntensity" min="10" max="100" value="50" class="range-input">
       </div>
       
       <div class="setting-item">
-        <span>🎨 Rang temasi</span>
-        <div class="color-picker">
-          <button class="color-option active" data-color="default" style="background: #00C896;"></button>
-          <button class="color-option" data-color="blue" style="background: #3b82f6;"></button>
-          <button class="color-option" data-color="purple" style="background: #a855f7;"></button>
-          <button class="color-option" data-color="gold" style="background: #D4AF37;"></button>
-          <button class="color-option" data-color="pink" style="background: #ec4899;"></button>
-        </div>
+        <span>◈ Ma'lumotlarni eksport</span>
+        <button id="exportDataBtn" class="secondary-btn" style="width:auto;padding:8px 20px;">Yuklab olish</button>
       </div>
       
       <div class="setting-item">
-        <span>💾 Ma'lumotlarni eksport</span>
-        <button id="exportDataBtn" class="secondary-btn" style="width: auto; padding: 8px 20px;">📥 Yuklab olish</button>
-      </div>
-      
-      <div class="setting-item">
-        <span>📥 Ma'lumotlarni import</span>
-        <input type="file" id="importDataInput" accept=".json" style="display: none;">
-        <button id="importDataBtn" class="secondary-btn" style="width: auto; padding: 8px 20px;">📤 Yuklash</button>
+        <span>◈ Ma'lumotlarni import</span>
+        <input type="file" id="importDataInput" accept=".json" style="display:none;">
+        <button id="importDataBtn" class="secondary-btn" style="width:auto;padding:8px 20px;">Yuklash</button>
       </div>
     </div>
   </div>
 
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js?v=4')
-        .then(() => console.log('SW registered'))
-        .catch(() => console.log('SW registration failed'));
+      navigator.serviceWorker.register('sw.js?v=5');
     }
   </script>
 </body>

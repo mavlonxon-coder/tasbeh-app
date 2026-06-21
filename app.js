@@ -2,12 +2,10 @@
 (function() {
     "use strict";
   
-    // ===== KONFIGURATSIYA =====
     const APP_VERSION = "4.0.0";
     const DEFAULT_ZIKR = ["SubhanAllah", "Alhamdulillah", "Allohu Akbar", "La ilaha illAllah", "Astag'firulloh"];
     const TARGETS = [33, 100, 500, 1000, 5000];
   
-    // ===== STATE =====
     let state = JSON.parse(localStorage.getItem("elektron_tasbeh")) || {
       count: 0,
       totalCount: 0,
@@ -21,7 +19,6 @@
       hapticIntensity: 50,
       zikrList: [...DEFAULT_ZIKR],
       history: [],
-      dailyHistory: {},
       favorites: [],
       undoStack: [],
       sessionTarget: null,
@@ -31,7 +28,6 @@
     let currentZikrIndex = 0;
     let isLightMode = false;
   
-    // ===== DOM =====
     const countEl = document.getElementById('countDisplay');
     const ringProgress = document.getElementById('ringProgress');
     const bar = document.getElementById('progressBar');
@@ -76,9 +72,7 @@
     const importDataInput = document.getElementById('importDataInput');
     
     const zikrChips = document.querySelectorAll('.zikr-chip');
-    const colorOptions = document.querySelectorAll('.color-option');
   
-    // ===== 1. AUDIO SYSTEM =====
     let audioCtx = null;
     
     function playSound() {
@@ -91,74 +85,40 @@
         gain.connect(audioCtx.destination);
         osc.frequency.value = 1200;
         osc.type = 'sine';
-        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
         osc.start(audioCtx.currentTime);
-        osc.stop(audioCtx.currentTime + 0.1);
-      } catch(e) { /* silent fail */ }
+        osc.stop(audioCtx.currentTime + 0.08);
+      } catch(e) {}
     }
   
-    // ===== 2. VIBRATION =====
     function playHaptic() {
       if (!state.vibrateEnabled || !navigator.vibrate) return;
-      const intensity = state.hapticIntensity / 100 * 50;
-      navigator.vibrate(Math.max(10, intensity));
+      const intensity = state.hapticIntensity / 100 * 40;
+      navigator.vibrate(Math.max(8, intensity));
     }
   
-    // ===== 3. SCREEN FLASH =====
-    function screenFlash() {
-      const flash = document.createElement('div');
-      flash.style.cssText = `
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 200, 150, 0.05);
-        z-index: 999;
-        pointer-events: none;
-        animation: flashFade 0.15s ease-out forwards;
-      `;
-      document.body.appendChild(flash);
-      setTimeout(() => flash.remove(), 200);
-    }
-  
-    // Add flash animation
-    const styleSheet = document.createElement("style");
-    styleSheet.textContent = `
-      @keyframes flashFade {
-        0% { opacity: 1; }
-        100% { opacity: 0; }
-      }
-    `;
-    document.head.appendChild(styleSheet);
-  
-    // ===== 4. UPDATE UI =====
     function updateUI() {
-      // Counter
       countEl.innerText = state.count;
       
-      // Progress ring
       const target = TARGETS[state.targetIndex];
       const progress = Math.min((state.count % target) / target * 100, 100);
-      const circumference = 534.07;
+      const circumference = 427.26;
       const offset = circumference - (progress / 100) * circumference;
       ringProgress.style.strokeDashoffset = offset;
       
-      // Progress bar
       bar.style.width = progress + '%';
-      
-      // Stats
       streakSpan.innerText = state.streak;
       totalCountEl.innerText = state.totalCount;
       sessionCountEl.innerText = state.sessionCount;
       targetDisplay.innerText = target;
       goalProgress.innerText = Math.round(progress) + '%';
       
-      // Today count
       const today = new Date().toDateString();
       const todayHistory = state.history.filter(h => h.date === today);
       const todayTotal = todayHistory.reduce((sum, h) => sum + h.count, 0);
       todayCount.innerText = todayTotal + state.count;
       
-      // Check daily limit
       if (state.dailyLimit && todayTotal + state.count >= state.dailyLimit) {
         setTimeout(() => {
           alert(`✅ Kunlik limit (${state.dailyLimit}) ga yetdingiz!`);
@@ -168,7 +128,6 @@
       localStorage.setItem('elektron_tasbeh', JSON.stringify(state));
     }
   
-    // ===== 5. STREAK CHECK =====
     function checkStreak() {
       const today = new Date().toDateString();
       if (state.lastDate !== today) {
@@ -181,7 +140,6 @@
         }
         state.lastDate = today;
         
-        // Save daily history
         if (state.count > 0) {
           state.history.push({
             date: today,
@@ -191,14 +149,12 @@
           if (state.history.length > 90) state.history.shift();
         }
         
-        // Reset session count for new day
         state.sessionCount = 0;
       }
       if (state.streak < 1) state.streak = 1;
       updateUI();
     }
   
-    // ===== 6. ADD ZIKR =====
     function addZikr() {
       state.count += 1;
       state.totalCount += 1;
@@ -206,16 +162,12 @@
       state.undoStack.push(state.count - 1);
       if (state.undoStack.length > 50) state.undoStack.shift();
       
-      // Feedback
       playSound();
       playHaptic();
-      screenFlash();
       
-      // Animation
       countEl.style.transform = 'scale(1.2)';
       setTimeout(() => { countEl.style.transform = 'scale(1)'; }, 120);
       
-      // Check target
       const target = TARGETS[state.targetIndex];
       if (state.count % target === 0 && state.count > 0) {
         setTimeout(() => {
@@ -223,7 +175,6 @@
         }, 300);
       }
       
-      // Check session target
       if (state.sessionTarget && state.sessionCount >= state.sessionTarget) {
         setTimeout(() => {
           alert(`🎯 Sessiya maqsadi (${state.sessionTarget}) ga yetdingiz!`);
@@ -235,7 +186,6 @@
       updateUI();
     }
   
-    // ===== 7. UNDO =====
     function undoAction() {
       if (state.undoStack.length === 0) {
         alert('Orqaga qaytarish uchun hech narsa yo\'q');
@@ -250,7 +200,6 @@
       updateUI();
     }
   
-    // ===== 8. RESET =====
     function resetCount() {
       if (state.count === 0) return;
       if (!confirm('Barcha zikrlarni qayta tiklamoqchimisiz?')) return;
@@ -262,7 +211,6 @@
       setTimeout(() => { countEl.style.transform = 'scale(1)'; }, 150);
     }
   
-    // ===== 9. MANUAL EDIT =====
     function editCount() {
       editCountInput.value = state.count;
       editModal.classList.add('show');
@@ -282,7 +230,6 @@
       updateUI();
     }
   
-    // ===== 10. CHANGE TARGET =====
     function changeTarget() {
       state.targetIndex = (state.targetIndex + 1) % TARGETS.length;
       updateUI();
@@ -290,13 +237,11 @@
       alert(`🎯 Yangi maqsad: ${TARGETS[state.targetIndex]}`);
     }
   
-    // ===== 11-12. ZIKR MANAGEMENT =====
     function changeZikr(index) {
       currentZikrIndex = index;
       zikrChips.forEach((chip, i) => {
         chip.classList.toggle('active', i === index);
       });
-      // Update display - we show zikr name somewhere
       playHaptic();
     }
   
@@ -318,7 +263,6 @@
       }
       state.zikrList.push(name);
       zikrModal.classList.remove('show');
-      // Add new chip
       const chip = document.createElement('div');
       chip.className = 'zikr-chip';
       chip.dataset.zikr = state.zikrList.length - 1;
@@ -329,7 +273,6 @@
       alert(`✅ "${name}" qo'shildi!`);
     }
   
-    // ===== 13. FAVORITES =====
     function toggleFavorite() {
       const currentZikr = state.zikrList[currentZikrIndex];
       const index = state.favorites.indexOf(currentZikr);
@@ -342,7 +285,6 @@
       playHaptic();
     }
   
-    // ===== 14. AUTO CYCLE (33-33-34) =====
     let autoCycleInterval = null;
     
     function toggleAutoCycle() {
@@ -371,7 +313,6 @@
       alert('▶ Avto zikr boshlandi (33-33-34)');
     }
   
-    // ===== 15. SESSION GOAL =====
     function setSessionGoal() {
       const goal = prompt('Sessiya maqsadini kiriting (raqam):');
       if (goal === null) return;
@@ -385,7 +326,6 @@
       alert(`🎯 Sessiya maqsadi: ${num} ta zikr`);
     }
   
-    // ===== 16. DAILY LIMIT =====
     function setDailyLimit() {
       const limit = prompt('Kunlik limitni kiriting (raqam):');
       if (limit === null) return;
@@ -399,7 +339,6 @@
       alert(`📅 Kunlik limit: ${num} ta zikr`);
     }
   
-    // ===== 17-18. STATISTICS =====
     function showHistory() {
       const historyHTML = state.history.length === 0 ? 
         '<p style="color:var(--text-secondary);">Hali tarix mavjud emas</p>' :
@@ -413,7 +352,7 @@
       modalBody.innerHTML = `
         <h2>📊 Zikr Tarixi</h2>
         ${historyHTML}
-        ${state.history.length > 30 ? `<p style="color:var(--text-secondary);font-size:12px;margin-top:8px;">Oxirgi 30 kun ko'rsatilmoqda</p>` : ''}
+        ${state.history.length > 30 ? `<p style="color:var(--text-secondary);font-size:11px;margin-top:6px;">Oxirgi 30 kun ko'rsatilmoqda</p>` : ''}
       `;
       modal.classList.add('show');
     }
@@ -432,33 +371,29 @@
       modalBody.innerHTML = `
         <h2>📈 Statistika</h2>
         
-        <div style="margin: 12px 0;">
-          <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border-color);">
+        <div style="margin:10px 0;">
+          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border);">
             <span>📊 Bugungi zikr</span>
-            <span style="color:#00C896;font-weight:700;">${todayCount.innerText}</span>
+            <span style="font-weight:700;">${todayCount.innerText}</span>
           </div>
-          <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border-color);">
+          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border);">
             <span>🔥 Streak</span>
-            <span style="color:#00C896;font-weight:700;">${state.streak} kun</span>
+            <span style="font-weight:700;">${state.streak} kun</span>
           </div>
-          <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border-color);">
+          <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border);">
             <span>📈 Jami zikr</span>
-            <span style="color:#00C896;font-weight:700;">${state.totalCount}</span>
+            <span style="font-weight:700;">${state.totalCount}</span>
           </div>
-          <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border-color);">
+          <div style="display:flex;justify-content:space-between;padding:3px 0;">
             <span>🎯 Haftalik o'rtacha</span>
-            <span style="color:#00C896;font-weight:700;">${weekData.length ? Math.round(weekData.reduce((s, h) => s + h.count, 0) / weekData.length) : 0}</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;padding:4px 0;">
-            <span>⭐ Sevimli zikr</span>
-            <span style="color:#00C896;font-weight:700;">${state.favorites.length || 'Yo\'q'}</span>
+            <span style="font-weight:700;">${weekData.length ? Math.round(weekData.reduce((s, h) => s + h.count, 0) / weekData.length) : 0}</span>
           </div>
         </div>
         
         <div class="chart-container" id="chartContainer">
           ${weekData.map(h => `
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
-              <div class="chart-bar" style="height:${(h.count / maxCount) * 80 + 10}px;"></div>
+              <div class="chart-bar" style="height:${(h.count / maxCount) * 70 + 8}px;"></div>
               <div class="chart-label">${new Date(h.date).toLocaleDateString('uz', {weekday:'short'})}</div>
             </div>
           `).join('')}
@@ -467,7 +402,6 @@
       modal.classList.add('show');
     }
   
-    // ===== 19. FULLSCREEN =====
     function toggleFullscreen() {
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(() => {});
@@ -476,7 +410,6 @@
       }
     }
   
-    // ===== 20-21. THEME =====
     function toggleTheme() {
       isLightMode = !isLightMode;
       document.body.classList.toggle('light-mode', isLightMode);
@@ -484,28 +417,6 @@
       localStorage.setItem('tasbeh_theme', isLightMode ? 'light' : 'dark');
     }
   
-    function changeColor(color) {
-      state.theme = color;
-      colorOptions.forEach(opt => opt.classList.toggle('active', opt.dataset.color === color));
-      
-      const colors = {
-        default: '#00C896',
-        blue: '#3b82f6',
-        purple: '#a855f7',
-        gold: '#D4AF37',
-        pink: '#ec4899'
-      };
-      
-      const accent = colors[color] || '#00C896';
-      document.documentElement.style.setProperty('--accent', accent);
-      document.documentElement.style.setProperty('--accent-glow', accent + '40');
-      ringProgress.style.stroke = accent;
-      countEl.style.color = accent;
-      
-      localStorage.setItem('tasbeh_ultra_v3', JSON.stringify(state));
-    }
-  
-    // ===== 22. EXPORT/IMPORT =====
     function exportData() {
       const data = {
         version: APP_VERSION,
@@ -553,50 +464,11 @@
       event.target.value = '';
     }
   
-    // ===== 23. PARTICLES BACKGROUND =====
-    function createParticles() {
-      const container = document.getElementById('particles');
-      for (let i = 0; i < 20; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDuration = (20 + Math.random() * 30) + 's';
-        particle.style.animationDelay = (Math.random() * 20) + 's';
-        particle.style.width = (2 + Math.random() * 3) + 'px';
-        particle.style.height = particle.style.width;
-        container.appendChild(particle);
-      }
-    }
-  
-    // ===== 24. KEYBOARD SHORTCUTS =====
-    document.addEventListener('keydown', (e) => {
-      if (e.key === ' ' || e.key === 'Space') {
-        e.preventDefault();
-        if (!modal.classList.contains('show') && !settingsModal.classList.contains('show')) {
-          addZikr();
-        }
-      }
-      if (e.key === 'Escape') {
-        closeAllModals();
-      }
-      if (e.key === 'z' && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        undoAction();
-      }
-      if (e.key === 'r' && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        resetCount();
-      }
-    });
-  
-    // ===== 25. CLOSE MODALS =====
     function closeAllModals() {
       [modal, zikrModal, editModal, settingsModal].forEach(m => m.classList.remove('show'));
     }
   
-    // ===== 26. INIT =====
     function init() {
-      // Load saved theme
       const savedTheme = localStorage.getItem('tasbeh_theme');
       if (savedTheme === 'light') {
         isLightMode = true;
@@ -604,17 +476,10 @@
         themeToggle.checked = true;
       }
       
-      // Load color theme
-      if (state.theme && state.theme !== 'default') {
-        changeColor(state.theme);
-      }
-      
-      // Load sound/vibration state
       soundToggle.checked = state.soundEnabled;
       vibrateToggle.checked = state.vibrateEnabled;
       hapticIntensity.value = state.hapticIntensity;
       
-      // Update zikr chips
       zikrChips.forEach((chip, i) => {
         if (i < state.zikrList.length) {
           chip.textContent = state.zikrList[i];
@@ -622,14 +487,9 @@
         }
       });
       
-      // Check streak and update
       checkStreak();
       updateUI();
       
-      // Create particles
-      createParticles();
-      
-      // Event listeners
       mainBtn.addEventListener('click', addZikr);
       undoBtn.addEventListener('click', undoAction);
       resetBtn.addEventListener('click', resetCount);
@@ -639,10 +499,8 @@
       settingsBtn.addEventListener('click', () => settingsModal.classList.add('show'));
       fullscreenBtn.addEventListener('click', toggleFullscreen);
       
-      // Double-click on count for edit
       countEl.addEventListener('dblclick', editCount);
       
-      // Zikr chips
       zikrChips.forEach((chip, i) => {
         chip.addEventListener('click', () => {
           if (i === zikrChips.length - 1) {
@@ -653,7 +511,6 @@
         });
       });
       
-      // Modals close
       [modalClose, zikrModalClose, editModalClose, settingsModalClose].forEach(btn => {
         btn.addEventListener('click', closeAllModals);
       });
@@ -664,19 +521,16 @@
         });
       });
       
-      // Zikr add
       addZikrBtn.addEventListener('click', addCustomZikr);
       newZikrInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') addCustomZikr();
       });
       
-      // Edit save
       saveEditBtn.addEventListener('click', saveEditCount);
       editCountInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') saveEditCount();
       });
       
-      // Settings
       themeToggle.addEventListener('change', toggleTheme);
       soundToggle.addEventListener('change', () => {
         state.soundEnabled = soundToggle.checked;
@@ -692,15 +546,10 @@
         if (state.vibrateEnabled) navigator.vibrate(20);
       });
       
-      colorOptions.forEach(opt => {
-        opt.addEventListener('click', () => changeColor(opt.dataset.color));
-      });
-      
       exportDataBtn.addEventListener('click', exportData);
       importDataBtn.addEventListener('click', importData);
       importDataInput.addEventListener('change', handleImport);
       
-      // Auto cycle on long press main button
       let longPressTimer = null;
       mainBtn.addEventListener('touchstart', () => {
         longPressTimer = setTimeout(toggleAutoCycle, 1500);
@@ -712,10 +561,26 @@
         clearTimeout(longPressTimer);
       });
       
-      console.log(`📿 Elektron Tasbeh v${APP_VERSION} — 26 funksiya`);
-      console.log('🔹 Zikr bilan qalbni tinchlantir');
+      document.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Space') {
+          e.preventDefault();
+          if (!modal.classList.contains('show') && !settingsModal.classList.contains('show')) {
+            addZikr();
+          }
+        }
+        if (e.key === 'Escape') closeAllModals();
+        if (e.key === 'z' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          undoAction();
+        }
+        if (e.key === 'r' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          resetCount();
+        }
+      });
+      
+      console.log(`📿 Elektron Tasbeh v${APP_VERSION} — Zikr bilan qalbni tinchlantir`);
     }
   
-    // ===== START =====
     init();
   })();

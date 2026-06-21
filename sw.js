@@ -1,11 +1,5 @@
-const CACHE_NAME = "elektron-tasbeh-v4";
-const ASSETS = [
-  "./",
-  "./index.html",
-  "./style.css",
-  "./app.js",
-  "./manifest.json"
-];
+const CACHE_NAME = "elektron-tasbeh-v5";
+const ASSETS = ["./", "./index.html", "./style.css", "./app.js", "./manifest.json"];
 
 self.addEventListener("install", e => {
   e.waitUntil(
