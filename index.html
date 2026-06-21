@@ -1,46 +1,60 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tasbeh Ultra Elite</title>
-
-<link rel="stylesheet" href="style.css">
-<link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Tasbeh Ultra Elite</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#050816">
 </head>
-
 <body>
-
-<div class="bg">
-  <div class="blob blob1"></div>
-  <div class="blob blob2"></div>
-  <div class="blob blob3"></div>
-</div>
-
-<div class="card">
-
-  <div class="title">📿 ULTRA ELITE TASBEH</div>
-  <div class="zikr" id="zikr">SubhanAllah</div>
-
-  <div class="count" id="count">0</div>
-
-  <div class="progress">
-    <div class="bar" id="bar"></div>
+  <div class="bg">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
   </div>
 
-  <button class="main" onclick="addZikr()">➕ Zikr qilish</button>
-  <button class="secondary" onclick="changeZikr()">🔁 Zikr almashtirish</button>
-  <button class="secondary" onclick="resetZikr()">♻ Reset</button>
+  <main class="card" role="main">
+    <header>
+      <h1 class="title">📿 TASBEH ULTRA</h1>
+      <p class="sub">UzGlobal 2026 · Elite</p>
+    </header>
 
-</div>
+    <div class="zikr" id="zikrDisplay">SubhanAllah</div>
 
-<script src="app.js"></script>
+    <div class="count-wrap">
+      <div class="count" id="countDisplay">0</div>
+    </div>
 
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
-}
-</script>
+    <div class="streak-badge" id="streakBadge">
+      <span>🔥</span> Streak: <span id="streakCount">1</span> kun
+    </div>
 
+    <div class="progress">
+      <div class="bar" id="progressBar"></div>
+    </div>
+
+    <div class="btn-group">
+      <button class="main-btn" id="mainBtn" aria-label="Zikr qilish">➕ Zikr qilish</button>
+      <div class="row-btns">
+        <button class="secondary-btn" id="changeZikrBtn">🔁 Zikr</button>
+        <button class="secondary-btn danger-btn" id="resetBtn">♻ Reset</button>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <span>✦</span> Tasbeh Ultra · v2.0 <span>✦</span>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('SW registered'))
+        .catch(() => console.log('SW registration failed'));
+    }
+  </script>
 </body>
 </html>
