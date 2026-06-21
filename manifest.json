@@ -1,19 +1,20 @@
 {
-    "name": "Tasbeh Ultra Elite",
+    "name": "Elektron Tasbeh",
     "short_name": "Tasbeh",
+    "description": "Zikr bilan qalbni tinchlantir",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#050816",
-    "theme_color": "#22c55e",
+    "background_color": "#0B0F14",
+    "theme_color": "#00C896",
     "icons": [
       {
-        "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23050816'/%3E%3Ctext x='50%25' y='55%25' font-size='90' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' fill='%2322c55e'%3E📿%3C/text%3E%3C/svg%3E",
+        "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%230B0F14'/%3E%3Ctext x='50%25' y='55%25' font-size='90' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' fill='%2300C896'%3E📿%3C/text%3E%3C/svg%3E",
         "sizes": "192x192",
         "type": "image/svg+xml",
         "purpose": "any maskable"
       },
       {
-        "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23050816'/%3E%3Ctext x='50%25' y='50%25' font-size='250' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' fill='%2322c55e'%3E📿%3C/text%3E%3C/svg%3E",
+        "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230B0F14'/%3E%3Ctext x='50%25' y='50%25' font-size='250' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' fill='%2300C896'%3E📿%3C/text%3E%3C/svg%3E",
         "sizes": "512x512",
         "type": "image/svg+xml",
         "purpose": "any maskable"

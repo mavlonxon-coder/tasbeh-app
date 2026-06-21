@@ -1,5 +1,4 @@
-// sw.js
-const CACHE_NAME = "tasbeh-ultra-v2";
+const CACHE_NAME = "elektron-tasbeh-v4";
 const ASSETS = [
   "./",
   "./index.html",
